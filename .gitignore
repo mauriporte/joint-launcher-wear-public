@@ -1,0 +1,8 @@
+.gradle/
+.kotlin/
+build/
+local.properties
+*.log
+*.apk
+# home-specific addresses and entity ids
+app/src/main/assets/config.json

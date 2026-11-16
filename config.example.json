@@ -1,0 +1,8 @@
+{
+  "homeUrl": "http://192.168.1.10:8123",
+  "master": "http://192.168.1.30:8798/overlay/master.json",
+  "externalUrl": "https://ha.example.com",
+  "players": ["media_player.spotify_you", "media_player.living_room_tv"],
+  "tv": "media_player.living_room_tv",
+  "tvRemote": "remote.living_room_tv"
+}
