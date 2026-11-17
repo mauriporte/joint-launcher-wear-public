@@ -16,6 +16,15 @@ Joint Launcher's look on a round Wear OS watch (built for a Fossil Gen 6, Wear O
 2. `.\gradlew.bat assembleDebug assembleRelease`
 3. Install the debug APK, run `set-token.ps1` and paste an HA long-lived token, then `adb install -r` the release APK
    (it keeps the token).
+   Release APKs (from GitHub) can't use `run-as`. Instead, open the app once, push the files into its external folder,
+   and reopen it; the app moves them into private storage and deletes the pushed copies:
+   ```
+   adb push config.json /sdcard/Android/data/com.mau.hub.wear/files/config.json
+   adb push token.txt /sdcard/Android/data/com.mau.hub.wear/files/token
+   adb shell am force-stop com.mau.hub.wear
+   ```
+   (`token.txt` holds only the token. A pushed `config.json` wins over one built into the APK. The SW3 build,
+   `com.mau.hub.wear.sw3`, takes `config.json` the same way; its token stays on the phone helper.)
 4. Notifications screen: `adb shell cmd notification allow_listener com.mau.hub.wear/com.mau.hub.wear.Notifs`
 5. Open the app once and allow the complication permission (Joint Flip's weather, steps, heart rate).
 6. Long-press the watch face to pick **Joint Launcher** or **Joint Flip**; long-press a tile → + → **Accesos**.

@@ -3,8 +3,9 @@ package com.mau.hub.wear
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
-/** Home-specific addresses and entity ids, from assets/config.json (git-ignored; see config.example.json). */
+/** Home-specific addresses and entity ids, from a config.json pushed over adb or else assets/config.json (git-ignored; see config.example.json). */
 object Config {
     var homeUrl = ""; private set
     var externalUrl = ""; private set
@@ -19,7 +20,10 @@ object Config {
 
     fun load(ctx: Context): Boolean {
         if (loaded) return true
-        val j = runCatching { JSONObject(ctx.assets.open("config.json").bufferedReader().use { it.readText() }) }.getOrNull() ?: return false
+        importPushed(ctx)
+        // a config.json pushed over adb wins over the one built into the APK
+        val pushed = File(ctx.filesDir, "config.json").takeIf { it.isFile }?.readText()
+        val j = runCatching { JSONObject(pushed ?: ctx.assets.open("config.json").bufferedReader().use { it.readText() }) }.getOrNull() ?: return false
         apply(j)
         return true
     }

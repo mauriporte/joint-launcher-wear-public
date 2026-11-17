@@ -14,8 +14,8 @@ android {
         applicationId = "com.mau.hub.wear"
         minSdk = 23
         targetSdk = 34
-        versionCode = 6
-        versionName = "0.6-legacy"
+        versionCode = 7
+        versionName = "0.7-legacy"
         applicationIdSuffix = ".sw3" // its own package, never confused with the Fossil build
         // the TV's entities for the face's Home/Back/volume keys, from the Fossil launcher's config (git-ignored)
         val launcher = file("../app/src/main/assets/config.json").takeIf { it.exists() }

@@ -3,6 +3,7 @@ package com.mau.hub.wear
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 class Server(val name: String, val cpu: String, val ram: String, val disk: String, val temp: String?) {
     val ids get() = listOfNotNull(cpu, ram, disk, temp)
@@ -23,7 +24,13 @@ object HaConfig {
 
     fun load(ctx: Context) {
         if (loaded) return
-        val j = runCatching { JSONObject(ctx.assets.open("config.json").bufferedReader().use { it.readText() }) }.getOrNull() ?: return
+        // release builds: a config.json pushed with adb to /sdcard/Android/data/<package>/files moves into private storage
+        ctx.getExternalFilesDir(null)?.let { File(it, "config.json") }?.takeIf { it.isFile }?.let { f ->
+            runCatching { f.copyTo(File(ctx.filesDir, "config.json"), overwrite = true) }
+            f.delete()
+        }
+        val pushed = File(ctx.filesDir, "config.json").takeIf { it.isFile }?.readText()
+        val j = runCatching { JSONObject(pushed ?: ctx.assets.open("config.json").bufferedReader().use { it.readText() }) }.getOrNull() ?: return
         dashboard = j.optString("dashboard", "lovelace")
         alarm = j.optString("alarm")
         weather = j.optString("weather")
